@@ -1,0 +1,14 @@
+name: rxq-diag
+on: push
+jobs:
+  diag:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-24.04, ubuntu-22.04, ubuntu-24.04-arm, ubuntu-22.04-arm]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v7.0.1
+      - run: uname -a
+      - run: cargo run -q --example rxq_diag --all-features
+      - run: cargo test -q --all-features --test test -- sys::test_socket::test_recvmsg_rxq_ovfl
